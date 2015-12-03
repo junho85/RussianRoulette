@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .line { overflow:hidden; }
+        .seat {
+            margin: 2px;
+            float: left;
+            width: 100px;
+            height: 100px;
+            background: Red;
+            border-radius: 3px;
+        }
+        .enable { background: Gray; }
+        .enable:hover { background: Black; }
+        .disable { background: Red; }
+        h2 { font-family: 'Noto Sans', sans-serif; }
+    </style>
+    <script src = "http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src = "/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect();
+
+        socket.on('reserve', function (data) {
+            var $target = $('div[data-x = ' + data.x + ']');
+            $target.removeClass('enable');
+            $target.addClass('disable');
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            var onClickSeat = function () {
+                var x = $(this).attr('data-x');
+
+                $(this).off('click');
+                socket.emit('reserve', { x: x });
+            };
+
+            var onClickTrap = function () {
+                alert("당첨!");
+
+                var x = $(this).attr('data-x');
+
+                $(this).off('click');
+                socket.emit('reserve', { x: x });
+            };
+
+            $.getJSON('/seats', { dummy: new Date().getTime() }, function (data) {
+
+                var $line = $('<div></div>').addClass('line');
+
+                $.each(data, function (indexX, seat) {
+                    var $output = $('<div></div>', {
+                        'class': 'seat',
+                        'data-x': indexX
+                    }).appendTo($line);
+
+                    if (seat == 1) {
+                        $output.addClass('enable').on('click', onClickSeat);
+                    } else if (seat == 2) {
+                        $output.addClass('disable');
+                    } else if (seat == 3) {
+                        $output.addClass('enable').on('click', onClickTrap);
+                    }
+                });
+                $line.appendTo('body');
+            });
+        });
+    </script>
+    <title>Russian Roulette</title>
+</head>
+<body>
+<h2>다음 주인공은?</h2>
+</body>
+</html>
