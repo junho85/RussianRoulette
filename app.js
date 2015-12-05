@@ -30,7 +30,6 @@ server.listen(port, function () {
 });
 
 var io = socketio.listen(server);
-io.set('log level', 2);
 
 io.sockets.on('connection', function (socket) {
     socket.on('shot', function (data) {
@@ -43,12 +42,12 @@ io.sockets.on('connection', function (socket) {
         }
         roulette[index] = result;
 
-        io.sockets.emit('shot', {x:index, result:result});
+        io.emit('shot', {x:index, result:result});
     });
 
     socket.on('reset', function (data) {
         console.log("reset;" + data.num);
         roulette = [NOT_OPEN, NOT_OPEN, NOT_OPEN, TRAP, NOT_OPEN, NOT_OPEN, NOT_OPEN];
-        io.sockets.emit('reset', JSON.stringify(roulette));
+        io.emit('reset', JSON.stringify(roulette));
     });
 });
