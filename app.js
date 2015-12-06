@@ -7,7 +7,21 @@ var LIVE = 2;
 var TRAP = 3;
 var DEAD = 4;
 
-var roulette = [NOT_OPEN, NOT_OPEN, NOT_OPEN, TRAP, NOT_OPEN, NOT_OPEN, NOT_OPEN];
+var cylinder = get_new_cylinder(7);
+
+function get_new_cylinder(num) {
+    var cylinder = [];
+    var randomNumber = Math.floor(Math.random() * num);
+    console.log("num=" + num + "; randomNumber=" + randomNumber);
+
+    for (var i=0; i<num; i++) {
+        cylinder.push(NOT_OPEN);
+    }
+
+    cylinder[randomNumber] = TRAP;
+    console.log(cylinder);
+    return cylinder;
+}
 
 var server = connect.createServer(connect.router(function (app) {
     app.get('/', function (request, response, next) {
@@ -19,7 +33,7 @@ var server = connect.createServer(connect.router(function (app) {
 
     app.get('/roulette', function (request, response, next) {
         response.writeHead(200, { 'Content-Type': 'application/json' })
-        response.end(JSON.stringify(roulette));
+        response.end(JSON.stringify(cylinder));
     });
 }));
 
@@ -35,19 +49,19 @@ io.sockets.on('connection', function (socket) {
     socket.on('shot', function (data) {
         var index = data.x;
         var result = 0;
-        if (roulette[index] == TRAP) {
+        if (cylinder[index] == TRAP) {
             result = DEAD;
         } else {
             result = LIVE;
         }
-        roulette[index] = result;
+        cylinder[index] = result;
 
         io.emit('shot', {x:index, result:result});
     });
 
     socket.on('reset', function (data) {
         console.log("reset;" + data.num);
-        roulette = [NOT_OPEN, NOT_OPEN, NOT_OPEN, TRAP, NOT_OPEN, NOT_OPEN, NOT_OPEN];
-        io.emit('reset', JSON.stringify(roulette));
+        cylinder = get_new_cylinder(7);
+        io.emit('reset', JSON.stringify(cylinder));
     });
 });
