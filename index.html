@@ -3,7 +3,7 @@
 <head>
     <style>
         .line { overflow:hidden; }
-        .roulette {
+        .chamber {
             margin: 2px;
             float: left;
             width: 100px;
@@ -59,34 +59,35 @@
             socket.emit('shot', { x: x });
         };
 
-        function reloadRoulette() {
+        function reloadCylinder() {
             $.getJSON('/roulette', { dummy: new Date().getTime() }, function (data) {
 
                 var $line = $('<div></div>').addClass('line');
 
-                $.each(data, function (indexX, roulette) {
+                $.each(data, function (indexX, chamber) {
                     var $output = $('<div></div>', {
-                        'class': 'roulette',
+                        'class': 'chamber',
                         'data-x': indexX
                     }).appendTo($line);
 
-                    if (roulette == 1) {
+                    if (chamber == 1) {
                         $output.addClass('enable').on('click', onClickSlot);
-                    } else if (roulette == 2) {
+                    } else if (chamber == 2) {
                         $output.addClass('live');
-                    } else if (roulette == 3) {
+                    } else if (chamber == 3) {
                         $output.addClass('enable').on('click', onClickTrap);
-                    } else if (roulette == 4) {
+                    } else if (chamber == 4) {
                         $output.addClass('dead');
                     }
                 });
+
                 $('#roulette').html('');
                 $line.appendTo('#roulette');
             });
         }
 
         socket.on('reset', function (data) {
-            reloadRoulette();
+            reloadCylinder();
         });
     </script>
 
@@ -97,7 +98,7 @@
                 socket.emit('reset', { num: 7 });
             });
 
-            reloadRoulette();
+            reloadCylinder();
         });
     </script>
     <title>Russian Roulette</title>
