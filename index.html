@@ -3,6 +3,11 @@
 <head>
     <style>
         .line { overflow:hidden; }
+        .box {
+            margin: 2px;
+            float: left;
+            border-radius: 3px;
+        }
         .chamber {
             margin: 2px;
             float: left;
@@ -13,7 +18,7 @@
         }
         .enable { background: Gray; }
         .enable:hover { background: Black; }
-        .live { background: Yellow; }
+        .live { background: Green; }
         .dead { background: Red; }
         h2 { font-family: 'Noto Sans', sans-serif; }
     </style>
@@ -65,19 +70,29 @@
                 var $line = $('<div></div>').addClass('line');
 
                 $.each(data, function (indexX, chamber) {
-                    var $output = $('<div></div>', {
-                        'class': 'chamber',
-                        'data-x': indexX
+                    var $box = $('<div></div>', {
+                        'class': 'box col-xs-1'
                     }).appendTo($line);
 
-                    if (chamber == 1) {
-                        $output.addClass('enable').on('click', onClickSlot);
-                    } else if (chamber == 2) {
-                        $output.addClass('live');
-                    } else if (chamber == 3) {
-                        $output.addClass('enable').on('click', onClickTrap);
-                    } else if (chamber == 4) {
-                        $output.addClass('dead');
+                    var $chamber = $('<div></div>', {
+                        'class': 'chamber',
+                        'data-x': indexX
+                    }).appendTo($box);
+
+                    $('<input>', {
+                        'type': 'text",',
+                        'value': chamber.name,
+                        'class': 'form-control'
+                    }).appendTo($box);
+
+                    if (chamber.status == 1) {
+                        $chamber.addClass('enable').on('click', onClickSlot);
+                    } else if (chamber.status == 2) {
+                        $chamber.addClass('live');
+                    } else if (chamber.status == 3) {
+                        $chamber.addClass('enable').on('click', onClickTrap);
+                    } else if (chamber.status == 4) {
+                        $chamber.addClass('dead');
                     }
                 });
 
@@ -95,7 +110,11 @@
         $(document).ready(function () {
 
             $("#btnReset").click(function() {
-                socket.emit('reset', { num: 7 });
+                var numOfChamber = $("#numOfChamber").val();
+                var names = $("#cylinderSetupForm input[name='chamber']").map(function(){return $(this).val();}).get();;
+                console.log("numOfChamber=" + numOfChamber + "; names=" + names);
+
+                socket.emit('reset', { num: numOfChamber, names: names });
             });
 
             reloadCylinder();
@@ -106,6 +125,22 @@
 <body>
 <h2>다음 주인공은?</h2>
 <div id="roulette"></div>
-<button id="btnReset" class="btn btn-primary">reset</button>
+
+<div id="setupBox">
+    <form name="cylinderSetupForm" id="cylinderSetupForm" action="">
+    <input type="text" id="numOfChamber" value="7">
+    <div id="nameBox">
+        <input type="text" name="chamber">
+        <input type="text" name="chamber">
+        <input type="text" name="chamber">
+        <input type="text" name="chamber">
+        <input type="text" name="chamber">
+        <input type="text" name="chamber">
+        <input type="text" name="chamber">
+    </div>
+    <input id="btnReset" class="btn btn-primary" value="reset">
+    </form>
+</div>
+
 </body>
 </html>
