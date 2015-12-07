@@ -7,18 +7,20 @@ var LIVE = 2;
 var TRAP = 3;
 var DEAD = 4;
 
-var cylinder = get_new_cylinder(7);
+var names = ['1', '2', '3', '4', '5', '6', '7'];
+var cylinder = get_new_cylinder(7, names);
 
-function get_new_cylinder(num) {
+function get_new_cylinder(num, names) {
     var cylinder = [];
     var randomNumber = Math.floor(Math.random() * num);
-    console.log("num=" + num + "; randomNumber=" + randomNumber);
+    console.log("num=" + num + "; randomNumber=" + randomNumber + "; names=" + names);
 
     for (var i=0; i<num; i++) {
-        cylinder.push(NOT_OPEN);
+        var chamber = { status: NOT_OPEN, name: names[i] };
+        cylinder.push(chamber);
     }
 
-    cylinder[randomNumber] = TRAP;
+    cylinder[randomNumber].status = TRAP;
     console.log(cylinder);
     return cylinder;
 }
@@ -60,8 +62,8 @@ io.sockets.on('connection', function (socket) {
     });
 
     socket.on('reset', function (data) {
-        console.log("reset;" + data.num);
-        cylinder = get_new_cylinder(7);
+        console.log("reset;" + data.num + "; names=" + data.names);
+        cylinder = get_new_cylinder(data.num, data.names);
         io.emit('reset', JSON.stringify(cylinder));
     });
 });
