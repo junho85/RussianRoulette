@@ -7,8 +7,8 @@ var LIVE = 2;
 var TRAP = 3;
 var DEAD = 4;
 
-var names = ['1', '2', '3', '4', '5', '6', '7'];
-var cylinder = get_new_cylinder(7, names);
+var names = ['rabbit', 'mouse', 'tiger', 'elephant', 'fox', 'snake', 'dragon'];
+var cylinder = get_new_cylinder(names.length, names);
 
 function get_new_cylinder(num, names) {
     var cylinder = [];

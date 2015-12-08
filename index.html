@@ -67,11 +67,13 @@
         function reloadCylinder() {
             $.getJSON('/roulette', { dummy: new Date().getTime() }, function (data) {
 
-                var $line = $('<div></div>').addClass('line');
+                var $line = $('<div></div>', {
+                    'class': 'form-group'
+                }).addClass('line');
 
                 $.each(data, function (indexX, chamber) {
                     var $box = $('<div></div>', {
-                        'class': 'box col-xs-1'
+                        'class': 'box col-md-2'
                     }).appendTo($line);
 
                     var $chamber = $('<div></div>', {
@@ -107,11 +109,54 @@
     </script>
 
     <script>
+        function redrawNameForm(num) {
+            var names = getChamberNames();
+
+            var $line = $('<div></div>', {
+                'class': 'form-group'
+            }).addClass('line');
+
+            function getName(names, i) {
+                var sampleNames = ['tiger', 'rabbit', 'mouse', 'horse', 'elephant', 'fox', 'snake', 'dragon'];
+
+                var randomNumber = Math.floor(Math.random() * sampleNames.length);
+
+                if (names[i]) {
+                    return names[i];
+                }
+                return sampleNames[randomNumber];
+            }
+            for (var i=0; i<num; i++) {
+                var $box = $('<div></div>', {
+                    'class': 'box col-md-2'
+                }).appendTo($line);
+
+                var nameInput = $('<input>', {
+                    'class': 'form-control',
+                    'type': 'text',
+                    'name': 'chamber',
+                    'value': getName(names, i)
+                }).appendTo($box);
+            }
+
+            $('#nameBox').html('');
+            $line.appendTo('#nameBox');
+        }
+
+        function getChamberNames() {
+            return $("#cylinderSetupForm input[name='chamber']").map(function () {
+                return $(this).val();
+            }).get();
+        }
+
         $(document).ready(function () {
+            $("#numOfChamber").change(function() {
+                redrawNameForm($(this).val());
+            }).change();
 
             $("#btnReset").click(function() {
                 var numOfChamber = $("#numOfChamber").val();
-                var names = $("#cylinderSetupForm input[name='chamber']").map(function(){return $(this).val();}).get();;
+                var names = getChamberNames();
                 console.log("numOfChamber=" + numOfChamber + "; names=" + names);
 
                 socket.emit('reset', { num: numOfChamber, names: names });
@@ -123,23 +168,24 @@
     <title>Russian Roulette</title>
 </head>
 <body>
-<h2>다음 주인공은?</h2>
-<div id="roulette"></div>
+<div class="container">
 
-<div id="setupBox">
-    <form name="cylinderSetupForm" id="cylinderSetupForm" action="">
-    <input type="text" id="numOfChamber" value="7">
-    <div id="nameBox">
-        <input type="text" name="chamber">
-        <input type="text" name="chamber">
-        <input type="text" name="chamber">
-        <input type="text" name="chamber">
-        <input type="text" name="chamber">
-        <input type="text" name="chamber">
-        <input type="text" name="chamber">
+    <h2>다음 주인공은?</h2>
+    <div id="roulette"></div>
+
+    <div id="setupBox">
+        <h2>설정</h2>
+        <form name="cylinderSetupForm" id="cylinderSetupForm" action="">
+        <div class="col-xs-2">
+            <input type="number" id="numOfChamber" class="form-control" value="7">
+        </div>
+        <div id="nameBox" class="row">
+
+        </div>
+        <input id="btnReset" class="btn btn-primary" value="reset">
+        </form>
     </div>
-    <input id="btnReset" class="btn btn-primary" value="reset">
-    </form>
+
 </div>
 
 </body>
