@@ -65,7 +65,7 @@
         };
 
         function reloadCylinder() {
-            $.getJSON('/roulette', { dummy: new Date().getTime() }, function (data) {
+            $.getJSON('/cylinder', { dummy: new Date().getTime() }, function (data) {
 
                 var $line = $('<div></div>', {
                     'class': 'form-group'
@@ -95,6 +95,8 @@
                         $chamber.addClass('enable').on('click', onClickTrap);
                     } else if (chamber.status == 4) {
                         $chamber.addClass('dead');
+                    } else {
+                        console.log("something wrong; status=" + chamber.status);
                     }
                 });
 
@@ -131,7 +133,7 @@
                     'class': 'box col-md-2'
                 }).appendTo($line);
 
-                var nameInput = $('<input>', {
+                $('<input>', {
                     'class': 'form-control',
                     'type': 'text',
                     'name': 'chamber',
