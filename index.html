@@ -35,6 +35,22 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
     <script src = "/socket.io/socket.io.js"></script>
+
+    <script>
+        var gun_shot_sound = new Audio('sound/gun-shot.mp3');
+        var gun_dry_sound = new Audio('sound/gun-dry.mp3');
+
+        function gun_shot() {
+            gun_shot_sound.currentTime = 0;
+            gun_shot_sound.play();
+        }
+
+        function gun_dry() {
+            gun_dry_sound.currentTime = 0;
+            gun_dry_sound.play();
+        }
+
+    </script>
     <script>
         var socket = io.connect();
 
@@ -49,6 +65,7 @@
         });
 
         var onClickSlot = function () {
+            gun_dry();
             var x = $(this).attr('data-x');
 
             $(this).off('click');
@@ -56,6 +73,7 @@
         };
 
         var onClickTrap = function () {
+            gun_shot();
             alert("당첨!");
 
             var x = $(this).attr('data-x');
@@ -152,6 +170,7 @@
         }
 
         $(document).ready(function () {
+
             $("#numOfChamber").change(function() {
                 redrawNameForm($(this).val());
             }).change();
@@ -188,7 +207,17 @@
         </form>
     </div>
 
+
 </div>
+
+<footer class="footer">
+    <div class="container">
+        <p class="text-muted">author: <a href="https://github.com/junho85" target="_blank">https://github.com/junho85</a></p>
+        <p class="text-muted">github: <a href="https://github.com/junho85/RussianRoulette" target="_blank">https://github.com/junho85/RussianRoulette</a></p>
+        <p class="text-muted">gun shot, dry sound from <a href="http://soundbible.com/" target="_blank">http://soundbible.com/</a></p>
+    </div>
+</footer>
+
 
 </body>
 </html>
