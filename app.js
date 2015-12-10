@@ -1,4 +1,5 @@
 var connect = require('connect');
+var serveStatic = require('serve-static');
 var socketio = require('socket.io');
 var fs = require('fs');
 var http = require('http')
@@ -26,7 +27,11 @@ function get_new_cylinder(num, names) {
     return cylinder;
 }
 
-var app = connect()
+var app = connect();
+
+// static
+app.use('/sound', serveStatic(__dirname + '/sound'));
+app.use('/css', serveStatic(__dirname + '/css'));
 
 app.use('/cylinder', function (request, response, next) {
     response.writeHead(200, { 'Content-Type': 'application/json' })
@@ -42,7 +47,9 @@ app.use('/', function (request, response, next) {
 
 var port = 55555;
 
-var server = http.createServer(app).listen(port, function () {
+var server = http.createServer(app);
+
+server.listen(port, function () {
     console.log('Server Running at http://127.0.0.1:' + port);
 })
 
