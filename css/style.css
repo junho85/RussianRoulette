@@ -1,0 +1,37 @@
+.line { overflow:hidden; }
+.box {
+    margin: 2px;
+    float: left;
+    border-radius: 3px;
+}
+.chamber {
+    margin: 2px;
+    float: left;
+    width: 100px;
+    height: 100px;
+    background: Red;
+    border-radius: 3px;
+}
+.enable {
+    background: url('/images/human.png');
+}
+.enable:hover {
+    background: url('/images/human-hover.png');
+}
+.live {
+    background:
+            linear-gradient(
+                    rgba(0, 255, 0, 0.45),
+                    rgba(0, 255, 0, 0)
+            ),
+            url('/images/human-live.png');
+}
+.dead {
+    background:
+            linear-gradient(
+                    rgba(255, 0, 0, 0.45),
+                    rgba(255, 0, 0, 0)
+            ),
+            url('/images/human-dead.png');
+}
+h2 { font-family: 'Noto Sans', sans-serif; }

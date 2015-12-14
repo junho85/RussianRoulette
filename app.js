@@ -31,6 +31,7 @@ var app = connect();
 
 // static
 app.use('/sound', serveStatic(__dirname + '/sound'));
+app.use('/images', serveStatic(__dirname + '/images'));
 app.use('/css', serveStatic(__dirname + '/css'));
 
 app.use('/cylinder', function (request, response, next) {
