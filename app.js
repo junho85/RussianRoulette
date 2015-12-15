@@ -27,6 +27,20 @@ function get_new_cylinder(num, names) {
     return cylinder;
 }
 
+function convert_cylinder_for_client(cylinder) {
+    var cylinder_for_client = [];
+    for (var i=0; i<cylinder.length; i++) {
+        var status = cylinder[i].status;
+        if (status == TRAP) {
+            status = NOT_OPEN;
+        }
+        var chamber = { status: status, name: cylinder[i].name };
+
+        cylinder_for_client.push(chamber);
+    }
+    return cylinder_for_client;
+}
+
 var app = connect();
 
 // static
@@ -36,7 +50,7 @@ app.use('/css', serveStatic(__dirname + '/css'));
 
 app.use('/cylinder', function (request, response, next) {
     response.writeHead(200, { 'Content-Type': 'application/json' })
-    response.end(JSON.stringify(cylinder));
+    response.end(JSON.stringify(convert_cylinder_for_client(cylinder)));
 });
 
 app.use('/', function (request, response, next) {
