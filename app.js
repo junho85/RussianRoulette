@@ -4,6 +4,9 @@ var socketio = require('socket.io');
 var fs = require('fs');
 var http = require('http')
 
+var express = require('express');
+var app = express();
+
 var NOT_OPEN = 1;
 var LIVE = 2;
 var TRAP = 3;
@@ -41,12 +44,11 @@ function convert_cylinder_for_client(cylinder) {
     return cylinder_for_client;
 }
 
-var app = connect();
-
 // static
 app.use('/sound', serveStatic(__dirname + '/sound'));
 app.use('/images', serveStatic(__dirname + '/images'));
 app.use('/css', serveStatic(__dirname + '/css'));
+app.use('/js', serveStatic(__dirname + '/js'));
 
 app.use('/cylinder', function (request, response, next) {
     response.writeHead(200, { 'Content-Type': 'application/json' })
