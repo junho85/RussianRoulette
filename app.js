@@ -64,12 +64,9 @@ app.use('/', function (request, response, next) {
 
 var port = 55555;
 
-var server = http.createServer(app);
-
-server.listen(port, function () {
+var server = app.listen(port, function () {
     console.log('Server Running at http://127.0.0.1:' + port);
 })
-
 
 var io = socketio.listen(server);
 
