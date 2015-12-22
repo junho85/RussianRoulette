@@ -6,3 +6,7 @@
 * nodejs v4.2.2
 * socket.io 1.3.7+
 * connect 3.4.0+
+
+```
+nvm use v4.2.2
+```
