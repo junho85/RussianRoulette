@@ -1,8 +1,6 @@
-var connect = require('connect');
 var serveStatic = require('serve-static');
 var socketio = require('socket.io');
 var fs = require('fs');
-var http = require('http')
 
 var express = require('express');
 var app = express();
@@ -66,7 +64,7 @@ var port = 55555;
 
 var server = app.listen(port, function () {
     console.log('Server Running at http://127.0.0.1:' + port);
-})
+});
 
 var io = socketio.listen(server);
 

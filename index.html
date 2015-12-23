@@ -4,6 +4,9 @@
     <link rel="shortcut icon" type="image/png" href="/images/human-dead.png"/>
     <link rel="stylesheet" href="css/style.css">
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+
     <script src = "http://code.jquery.com/jquery-2.1.4.min.js"></script>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -144,7 +147,7 @@
 
             $("#numOfChamber").change(function() {
                 redrawNameForm($(this).val());
-            }).change();
+            });
 
             $("#btnReset").click(function() {
                 var numOfChamber = $("#numOfChamber").val();
@@ -169,11 +172,49 @@
         <h2>설정</h2>
         <form name="cylinderSetupForm" id="cylinderSetupForm" action="">
         <div class="col-xs-2">
-            <input type="number" id="numOfChamber" class="form-control" value="7">
+            <input type="number" id="numOfChamber" class="form-control" value="8">
         </div>
+
+
         <div id="nameBox" class="row">
 
         </div>
+
+        <script type="text/jsx">
+            var data = [
+                {user: "mouse"},
+                {user: "rabbit"},
+                {user: "tiger"},
+                {user: "elephant"},
+                {user: "fox"},
+                {user: "snake"},
+                {user: "dragon"},
+                {user: "turtle"},
+            ];
+
+            var NameBoxList = React.createClass({
+                render: function() {
+                    var nameBoxNodes = data.map(function (row) {
+                        return (
+                                <div className="box col-md-2">
+                                    <input className="form-control" type="text" name="chamber" value={row.user}></input>
+                                </div>
+                        );
+                    });
+                    return (
+                            <div className="form-group line">
+                                {nameBoxNodes}
+                            </div>
+                    );
+                }
+            });
+
+            React.render(
+                    <NameBoxList></NameBoxList>,
+                    document.getElementById('nameBox'));
+
+        </script>
+
         <input id="btnReset" class="btn btn-primary" value="reset">
         </form>
     </div>
