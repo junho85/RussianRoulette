@@ -43,10 +43,10 @@ function convert_cylinder_for_client(cylinder) {
 }
 
 // static
-app.use('/sound', serveStatic(__dirname + '/sound'));
-app.use('/images', serveStatic(__dirname + '/images'));
-app.use('/css', serveStatic(__dirname + '/css'));
-app.use('/js', serveStatic(__dirname + '/js'));
+app.use('/sound', express.static(__dirname + '/sound'));
+app.use('/images', express.static(__dirname + '/images'));
+app.use('/css', express.static(__dirname + '/css'));
+app.use('/js', express.static(__dirname + '/js'));
 
 app.use('/cylinder', function (request, response, next) {
     response.writeHead(200, { 'Content-Type': 'application/json' })

@@ -171,53 +171,16 @@
     <div id="setupBox">
         <h2>설정</h2>
         <form name="cylinderSetupForm" id="cylinderSetupForm" action="">
-        <div class="col-xs-2">
-            <input type="number" id="numOfChamber" class="form-control" value="8">
-        </div>
 
+        <div id="nameBox" class="row"></div>
 
-        <div id="nameBox" class="row">
-
-        </div>
-
-        <script type="text/jsx">
-            var data = [
-                {user: "mouse"},
-                {user: "rabbit"},
-                {user: "tiger"},
-                {user: "elephant"},
-                {user: "fox"},
-                {user: "snake"},
-                {user: "dragon"},
-                {user: "turtle"},
-            ];
-
-            var NameBoxList = React.createClass({
-                render: function() {
-                    var nameBoxNodes = data.map(function (row) {
-                        return (
-                                <div className="box col-md-2">
-                                    <input className="form-control" type="text" name="chamber" value={row.user}></input>
-                                </div>
-                        );
-                    });
-                    return (
-                            <div className="form-group line">
-                                {nameBoxNodes}
-                            </div>
-                    );
-                }
-            });
-
-            React.render(
-                    <NameBoxList></NameBoxList>,
-                    document.getElementById('nameBox'));
-
-        </script>
+        <script type="text/jsx" src="js/namebox.js"></script>
 
         <input id="btnReset" class="btn btn-primary" value="reset">
         </form>
     </div>
+
+    <div id="todoList" class="row"></div>
 
 
 </div>
