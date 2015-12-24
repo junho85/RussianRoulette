@@ -1,8 +1,6 @@
-var connect = require('connect');
 var serveStatic = require('serve-static');
 var socketio = require('socket.io');
 var fs = require('fs');
-var http = require('http')
 
 var express = require('express');
 var app = express();
@@ -45,10 +43,10 @@ function convert_cylinder_for_client(cylinder) {
 }
 
 // static
-app.use('/sound', serveStatic(__dirname + '/sound'));
-app.use('/images', serveStatic(__dirname + '/images'));
-app.use('/css', serveStatic(__dirname + '/css'));
-app.use('/js', serveStatic(__dirname + '/js'));
+app.use('/sound', express.static(__dirname + '/sound'));
+app.use('/images', express.static(__dirname + '/images'));
+app.use('/css', express.static(__dirname + '/css'));
+app.use('/js', express.static(__dirname + '/js'));
 
 app.use('/cylinder', function (request, response, next) {
     response.writeHead(200, { 'Content-Type': 'application/json' })
@@ -66,7 +64,7 @@ var port = 55555;
 
 var server = app.listen(port, function () {
     console.log('Server Running at http://127.0.0.1:' + port);
-})
+});
 
 var io = socketio.listen(server);
 
