@@ -28,8 +28,8 @@
             gun_dry_sound.currentTime = 0;
             gun_dry_sound.play();
         }
-
     </script>
+
     <script>
         var socket = io.connect();
 
@@ -103,39 +103,6 @@
     </script>
 
     <script>
-        function redrawNameForm(num) {
-            var names = getChamberNames();
-
-            var $line = $('<div></div>', {
-                'class': 'form-group'
-            }).addClass('line');
-
-            function getName(names, i) {
-                var sampleNames = ['tiger', 'rabbit', 'mouse', 'horse', 'elephant', 'fox', 'snake', 'dragon'];
-
-                var randomNumber = Math.floor(Math.random() * sampleNames.length);
-
-                if (names[i]) {
-                    return names[i];
-                }
-                return sampleNames[randomNumber];
-            }
-            for (var i=0; i<num; i++) {
-                var $box = $('<div></div>', {
-                    'class': 'box col-md-2'
-                }).appendTo($line);
-
-                $('<input>', {
-                    'class': 'form-control',
-                    'type': 'text',
-                    'name': 'chamber',
-                    'value': getName(names, i)
-                }).appendTo($box);
-            }
-
-            $('#nameBox').html('');
-            $line.appendTo('#nameBox');
-        }
 
         function getChamberNames() {
             return $("#cylinderSetupForm input[name='chamber']").map(function () {
@@ -144,10 +111,6 @@
         }
 
         $(document).ready(function () {
-
-            $("#numOfChamber").change(function() {
-                redrawNameForm($(this).val());
-            });
 
             $("#btnReset").click(function() {
                 var numOfChamber = $("#numOfChamber").val();
@@ -179,9 +142,6 @@
         <input id="btnReset" class="btn btn-primary" value="reset">
         </form>
     </div>
-
-    <div id="todoList" class="row"></div>
-
 
 </div>
 

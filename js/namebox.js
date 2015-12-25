@@ -6,6 +6,15 @@ var NameBoxList = React.createClass({
         };
     },
     handleChange: function(event) {
+
+        function getRandomName() {
+            var sampleNames = ['tiger', 'rabbit', 'mouse', 'horse', 'elephant', 'fox', 'snake', 'dragon'];
+
+            var randomNumber = Math.floor(Math.random() * sampleNames.length);
+
+            return sampleNames[randomNumber];
+        }
+
         var beforeValue = this.state.value;
         var currentValue = event.target.value;
 
@@ -20,7 +29,7 @@ var NameBoxList = React.createClass({
         } else if (diffValue > 0) {
             // add
             for (var i=0; i<diffValue; i++) {
-                var newItem = 'new item';
+                var newItem = getRandomName();
                 newItems = this.state.items.concat(newItem);
             }
         }
@@ -29,7 +38,6 @@ var NameBoxList = React.createClass({
             value: event.target.value,
             items: newItems
         });
-
     },
     render: function() {
         var value = this.state.value;
