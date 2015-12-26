@@ -1,4 +1,3 @@
-var serveStatic = require('serve-static');
 var socketio = require('socket.io');
 var fs = require('fs');
 
