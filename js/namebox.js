@@ -45,7 +45,7 @@ var NameBoxList = React.createClass({
         var nameBoxNodes = data.map(function (row) {
             return (
                 <div className="box col-md-2">
-                    <input className="form-control" type="text" name="chamber" value={row}></input>
+                    <input type="text" className="form-control" name="chamber" defaultValue={row} />
                 </div>
             );
         });
