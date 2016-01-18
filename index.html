@@ -1,76 +1,157 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        .line { overflow:hidden; }
-        .seat {
-            margin: 2px;
-            float: left;
-            width: 100px;
-            height: 100px;
-            background: Red;
-            border-radius: 3px;
-        }
-        .enable { background: Gray; }
-        .enable:hover { background: Black; }
-        .disable { background: Red; }
-        h2 { font-family: 'Noto Sans', sans-serif; }
-    </style>
+    <link rel="shortcut icon" type="image/png" href="/images/human-dead.png"/>
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
+
     <script src = "http://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
     <script src = "/socket.io/socket.io.js"></script>
+
+    <script>
+        var gun_shot_sound = new Audio('sound/gun-shot.mp3');
+        var gun_dry_sound = new Audio('sound/gun-dry.mp3');
+
+        function gun_shot() {
+            gun_shot_sound.currentTime = 0;
+            gun_shot_sound.play();
+        }
+
+        function gun_dry() {
+            gun_dry_sound.currentTime = 0;
+            gun_dry_sound.play();
+        }
+    </script>
+
     <script>
         var socket = io.connect();
 
-        socket.on('reserve', function (data) {
+        socket.on('shot', function (data) {
             var $target = $('div[data-x = ' + data.x + ']');
             $target.removeClass('enable');
-            $target.addClass('disable');
+            if (data.result == 2) {
+                gun_dry();
+                $target.addClass('live');
+            } else if (data.result == 4) {
+                gun_shot();
+                $target.addClass('dead');
+                alert("당첨!");
+            }
+        });
+
+        var onClickSlot = function () {
+            var x = $(this).attr('data-x');
+
+            $(this).off('click');
+            socket.emit('shot', { x: x });
+        };
+
+        function reloadCylinder() {
+            $.getJSON('/cylinder', { dummy: new Date().getTime() }, function (data) {
+
+                var $line = $('<div></div>', {
+                    'class': 'form-group'
+                }).addClass('line');
+
+                $.each(data, function (indexX, chamber) {
+                    var $box = $('<div></div>', {
+                        'class': 'box col-md-2'
+                    }).appendTo($line);
+
+                    var $chamber = $('<div></div>', {
+                        'class': 'chamber',
+                        'data-x': indexX
+                    }).appendTo($box);
+
+                    $('<input>', {
+                        'type': 'text',
+                        'value': chamber.name,
+                        'class': 'form-control'
+                    }).appendTo($box);
+
+                    var NOT_OPEN = 1;
+                    var LIVE = 2;
+                    var TRAP = 3;
+                    var DEAD = 4;
+
+                    if (chamber.status == NOT_OPEN) {
+                        $chamber.addClass('enable').on('click', onClickSlot);
+                    } else if (chamber.status == LIVE) {
+                        $chamber.addClass('live');
+                    } else if (chamber.status == DEAD) {
+                        $chamber.addClass('dead');
+                    } else {
+                        console.log("something wrong; status=" + chamber.status);
+                    }
+                });
+
+                $('#cylinder').html('');
+                $line.appendTo('#cylinder');
+            });
+        }
+
+        socket.on('reset', function (data) {
+            reloadCylinder();
         });
     </script>
 
     <script>
+        function getChamberNames() {
+            return $("#cylinderSetupForm input[name='chamber']").map(function () {
+                return $(this).val();
+            }).get();
+        }
+
         $(document).ready(function () {
-            var onClickSeat = function () {
-                var x = $(this).attr('data-x');
 
-                $(this).off('click');
-                socket.emit('reserve', { x: x });
-            };
+            $("#btnReset").click(function() {
+                var numOfChamber = $("#numOfChamber").val();
+                var names = getChamberNames();
+                console.log("numOfChamber=" + numOfChamber + "; names=" + names);
 
-            var onClickTrap = function () {
-                alert("당첨!");
-
-                var x = $(this).attr('data-x');
-
-                $(this).off('click');
-                socket.emit('reserve', { x: x });
-            };
-
-            $.getJSON('/seats', { dummy: new Date().getTime() }, function (data) {
-
-                var $line = $('<div></div>').addClass('line');
-
-                $.each(data, function (indexX, seat) {
-                    var $output = $('<div></div>', {
-                        'class': 'seat',
-                        'data-x': indexX
-                    }).appendTo($line);
-
-                    if (seat == 1) {
-                        $output.addClass('enable').on('click', onClickSeat);
-                    } else if (seat == 2) {
-                        $output.addClass('disable');
-                    } else if (seat == 3) {
-                        $output.addClass('enable').on('click', onClickTrap);
-                    }
-                });
-                $line.appendTo('body');
+                socket.emit('reset', { num: numOfChamber, names: names });
             });
+
+            reloadCylinder();
         });
     </script>
     <title>Russian Roulette</title>
 </head>
 <body>
-<h2>다음 주인공은?</h2>
+<div class="container">
+
+    <h2>다음 주인공은?</h2>
+    <div id="cylinder"></div>
+
+    <div id="setupBox">
+        <h2>설정</h2>
+        <form name="cylinderSetupForm" id="cylinderSetupForm" action="">
+
+        <div id="nameBox" class="row"></div>
+
+        <script type="text/jsx" src="js/namebox.js"></script>
+
+        <input id="btnReset" class="btn btn-primary" value="reset">
+        </form>
+    </div>
+
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <p class="text-muted">author: <a href="https://github.com/junho85" target="_blank">https://github.com/junho85</a></p>
+        <p class="text-muted">github: <a href="https://github.com/junho85/RussianRoulette" target="_blank">https://github.com/junho85/RussianRoulette</a></p>
+        <p class="text-muted">gun shot, dry sound from <a href="http://soundbible.com/" target="_blank">http://soundbible.com/</a></p>
+    </div>
+</footer>
+
+
 </body>
 </html>
